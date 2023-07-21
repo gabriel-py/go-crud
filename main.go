@@ -36,5 +36,5 @@ func main() {
 	// setup routes
 	api.SetupRouter(r, destinationHandler)
 
-	r.Run(":8001")
+	r.Run(":8002")
 }

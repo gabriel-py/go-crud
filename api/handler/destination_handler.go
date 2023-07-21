@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/amopromo/gochip/model"
 	"github.com/amopromo/gochip/repository"
 
 	"github.com/gin-gonic/gin"
@@ -28,9 +29,14 @@ func (h *DestinationHandler) GetDestinations(c *gin.Context) {
 }
 
 func (h *DestinationHandler) CreateDestinations(c *gin.Context) {
-	destination, err := h.DestinationRepository.Create(c.Params.ByName("name"), c.Params.ByName("slug"))
+	var Dest model.Destination
+	if errBind := c.BindJSON(&Dest); errBind != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "error binding json"})
+		return
+	}
+	destination, err := h.DestinationRepository.Create(Dest)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating destination"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
 

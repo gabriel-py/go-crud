@@ -1,6 +1,8 @@
 package sql
 
 import (
+	"fmt"
+
 	"github.com/amopromo/gochip/model"
 	"github.com/jmoiron/sqlx"
 )
@@ -13,11 +15,12 @@ func NewDestinationRepository(db *sqlx.DB) *DestinationRepository {
 	return &DestinationRepository{DB: db}
 }
 
-func (r *DestinationRepository) Create(name string, slug string) (*model.Destination, error) {
-	var Destination *model.Destination
-	err := r.DB.Select(&Destination, "INSERT INTO destination (name, slug, active) VALUES ($1, $2, true)", name, slug)
+func (r *DestinationRepository) Create(d model.Destination) (model.Destination, error) {
+	var Destination model.Destination
+	err := r.DB.QueryRow("INSERT INTO destination (name, slug, active) VALUES ($1, $2, true) RETURNING id, name, slug, active", d.Name, d.Slug).Scan(&Destination.ID, &Destination.Name, &Destination.Slug, &Destination.Active)
+	fmt.Println(err)
 	if err != nil {
-		return nil, err
+		return Destination, err
 	}
 	return Destination, nil
 }

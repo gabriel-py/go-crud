@@ -5,7 +5,7 @@ import (
 )
 
 type DestinationRepository interface {
-	Create(name string, slug string) (*model.Destination, error)
+	Create(d model.Destination) (model.Destination, error)
 	Update(destination *model.Destination) error
 	Delete(destination *model.Destination) error
 	Get(destination *model.Destination) error
